@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final int LOADER_ID = 1;
 
     //URL for Google Books Query
-    private static String GOOGLE_BOOKS_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes&key=AIzaSyBNOO4OEEQ_Avje4oQB_UqpyqB8Et_oQ_A";
+    private static String GOOGLE_BOOKS_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes";
 
     // Adapter for the list of books
     private BookAdapter mAdapter;
