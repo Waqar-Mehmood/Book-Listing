@@ -3,18 +3,13 @@ package com.example.android.booklisting;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by user on 19-Jul-17.
- */
-
-public class BookLoader extends AsyncTaskLoader<ArrayList<Book>>{
+public class BookLoader extends AsyncTaskLoader<List<Book>> {
 
     private String mURL;
 
-    public  BookLoader(Context context, String url){
+    public BookLoader(Context context, String url) {
         super(context);
         mURL = url;
     }
@@ -25,12 +20,11 @@ public class BookLoader extends AsyncTaskLoader<ArrayList<Book>>{
     }
 
     @Override
-    public ArrayList<Book> loadInBackground() {
+    public List<Book> loadInBackground() {
         if (mURL == null) {
             return null;
         }
 
-        ArrayList<Book> books = QueryUtils.extractBooks(mURL);
-        return books;
+        return QueryUtils.extractBooks(mURL);
     }
 }

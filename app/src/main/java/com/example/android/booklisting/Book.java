@@ -2,26 +2,24 @@ package com.example.android.booklisting;
 
 import java.util.ArrayList;
 
-/**
- * Created by user on 19-Jul-17.
- */
-
-public class Book
-{
+public class Book {
     private String mTitle;
     private String mSubtitle;
     private String mImageURL;
     private ArrayList<String> mAuthors;
     private String Publisher;
-    private String date;
+    private String mDate;
+    private String mPreviewLink;
 
-    public Book(String mTitle, String mSubtitle, String mImageURL, ArrayList<String> mAuthors, String publisher, String date) {
+    public Book(String mTitle, String mSubtitle, String mImageURL, ArrayList<String> mAuthors,
+                String publisher, String date, String previewLink) {
         this.mTitle = mTitle;
         this.mSubtitle = mSubtitle;
         this.mImageURL = mImageURL;
         this.mAuthors = mAuthors;
         Publisher = publisher;
-        this.date = date;
+        this.mDate = date;
+        mPreviewLink = previewLink;
     }
 
 
@@ -46,7 +44,11 @@ public class Book
     }
 
     public String getDate() {
-        return date;
+        return mDate;
+    }
+
+    public String getmPreviewLink() {
+        return mPreviewLink;
     }
 }
 

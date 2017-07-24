@@ -22,10 +22,6 @@ import java.util.List;
 
 import static com.example.android.booklisting.MainActivity.LOG_TAG;
 
-/**
- * Created by user on 19-Jul-17.
- */
-
 public final class QueryUtils {
 
     // Empty private constructor because no one should ever create a QueryUtils object.
@@ -33,7 +29,7 @@ public final class QueryUtils {
     }
 
     //  Return a list of Book objects that has been built up from parsing a JSON response.
-    public static ArrayList<Book> extractBooks(String requestURL) {
+    public static List<Book> extractBooks(String requestURL) {
         URL url = createUrl(requestURL);
 
         String jsonResponse = "";
@@ -44,7 +40,7 @@ public final class QueryUtils {
         }
 
         // Extract relevant fields from the JSON response and create an {@link Event} object
-        ArrayList<Book> books = extractFeatureFromJson(jsonResponse);
+        List<Book> books = extractFeatureFromJson(jsonResponse);
         return books;
     }
 
@@ -72,17 +68,16 @@ public final class QueryUtils {
         InputStream inputStream = null;
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
             urlConnection.setReadTimeout(10000 /* milliseconds */);
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
+            urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
             if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
-            }
-            else{
+            } else {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
@@ -117,43 +112,51 @@ public final class QueryUtils {
     }
 
     @Nullable
-    private static ArrayList<Book> extractFeatureFromJson(String bookJSON) {
+    private static List<Book> extractFeatureFromJson(String bookJSON) {
 
-        if(TextUtils.isEmpty(bookJSON)){
+        if (TextUtils.isEmpty(bookJSON)) {
             return null;
         }
 
-        ArrayList<Book> books = new ArrayList<Book>();
+        List<Book> books = new ArrayList<>();
 
         try {
+            JSONObject baseJsonResponse = new JSONObject(bookJSON);
+            JSONArray booksArray = baseJsonResponse.getJSONArray("items");
 
-            JSONObject baseJsonResponse  = new JSONObject(bookJSON);
-            JSONArray booksArray = baseJsonResponse .getJSONArray("items");
-            for(int i = 0; i < booksArray.length(); i++){
+            Log.d("BooksArray", " " + booksArray.length());
+
+            for (int i = 0; i < booksArray.length(); i++) {
                 JSONObject currentBook = booksArray.getJSONObject(i);
                 JSONObject volumeInfo = currentBook.getJSONObject("volumeInfo");
 
+                Log.d("BooksArray", " " + i);
+
                 String title = volumeInfo.getString("title");
-                String subtitle="";
-                if(volumeInfo.has("subtitle")){
+                String subtitle = "";
+                if (volumeInfo.has("subtitle")) {
                     subtitle = volumeInfo.getString("subtitle");
                 }
 
-
                 JSONArray authors = volumeInfo.getJSONArray("authors");
-                ArrayList<String> authorLsit = new ArrayList<>();
-                for(int j = 0; j < authors.length(); j++){
-                    authorLsit.add(authors.getString(j));
+                ArrayList<String> authorList = new ArrayList<>();
+                for (int j = 0; j < authors.length(); j++) {
+                    authorList.add(authors.getString(j));
                 }
 
-                String publisher = volumeInfo.getString("publisher");
+                String publisher = "";
+                if(volumeInfo.has("publisher")){
+                    publisher = volumeInfo.getString("publisher");
+                }
+
                 String publishedDate = volumeInfo.getString("publishedDate");
 
                 JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
                 String image = imageLinks.getString("smallThumbnail");
 
-                books.add(new Book(title, subtitle, image, authorLsit, publisher, publishedDate));
+                String previewLink = volumeInfo.getString("infoLink");
 
+                books.add(new Book(title, subtitle, image, authorList, publisher, publishedDate, previewLink));
             }
 
         } catch (JSONException e) {
